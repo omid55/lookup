@@ -13,13 +13,15 @@ default: &default
   adapter: mysql2
   encoding: utf8
   pool: 5
-  username: root
-  password:
+  username: lookupuser
+  password: LookupPass
   socket: /var/run/mysqld/mysqld.sock
+  host: lookupdb.crp69yzweuao.us-west-2.rds.amazonaws.com
+  port: 3306
 
 development:
   <<: *default
-  database: lookup_development
+  database: lookupdb
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
