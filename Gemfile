@@ -6,6 +6,10 @@ gem 'devise'
 gem 'geokit'
 
 gem 'geokit-rails'
+
+gem 'execjs'
+
+gem 'therubyracer'
 #Added gems
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
