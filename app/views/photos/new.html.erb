@@ -1,0 +1,38 @@
+
+
+<h4 style="color:#26a69a;"> Upload Photo </h4>
+<div class="container center-align" style = "padding:10px;">
+
+<%= form_for @photo, :url => {:action => 'create'}, html: { multipart: true } do |f| %>
+
+  <div class = "row">
+  <div class = "col s12">
+    <div class="input-field">
+   		<%= f.label 'Title' %>
+   		<input type="text" name="title">
+    </div>
+
+
+    <div class="input-field center" style="padding:20px;">
+      <%= f.label :image %><br>
+      <%= f.file_field :image, :class => "actions waves-effect btn" %>
+    </div>
+    </div>
+
+    <input type="hidden" id="lat" name="lat">
+    <input type="hidden" id="lng" name="lng">
+
+    <div class = "col s12">
+    	<div id="map" class="s12" style="height:400px;"></div>
+    </div>
+
+  </div>
+
+
+    <div class="actions waves-effect waves-light btn">
+      <%= f.submit "Create" %>
+    </div>
+
+  <% end %>
+
+</div>

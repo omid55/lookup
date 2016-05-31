@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8" />
+      <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
+      <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+      <!--[if lt IE 8]><script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script><![endif]-->
+      <title> Lookup </title>
+      <meta name="description" content="Find hot and happening places around you" />
+      <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css" rel="stylesheet" />
+       <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
+      <%= stylesheet_link_tag 'application', media: 'all',
+                                        'data-turbolinks-track' => true %>
+      <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+      <%= javascript_include_tag 'maps', 'data-turbolinks-track' => true %>
+      <%= csrf_meta_tags %>
+     
+   </head>
+   <body class = "#fafafa grey lighten-5">
+
+
+        <div class="navbar-fixed">
+          <nav class = "#d84315 deep-orange darken-3">
+            <div class="nav-wrapper container">
+              <a href="/" class="brand-logo"> <%= image_tag("logo.svg", class: "responsive-img", style: "height:30px;margin-top: 16px;") %> </a>
+              <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+              <ul class="right hide-on-med-and-down">
+              <%if @user != nil %>
+               <li ><a href="/users/edit"> 
+                 <%= @user.email %>
+               </a></li>
+                <li ><a> <%= link_to('Logout', destroy_user_session_path, :method => :delete) %></a></li>
+                 <% else %>
+                <li > <a> <%= link_to('Login', new_user_session_path)  %> </a></li>
+               <% end %>
+              </ul>
+
+
+                <ul class="side-nav" id="mobile-demo">
+                <%if @user != nil %>
+                 <li ><a href="badges.html"> 
+                   <%= @user.email %>
+                 </a></li>
+                  <li > <a> <%= link_to('Logout', destroy_user_session_path, :method => :delete) %>  </a></li>
+                   <% else %>
+                  <li> <a> <%= link_to('Login', new_user_session_path)  %> </a> </li>
+                 <% end %>
+                </ul>
+
+
+            </div>
+          </nav>
+        </div>
+
+      <%= yield %>
+
+
+   <div class="fixed-action-btn horizontal click-to-toggle" style="bottom: 2em; right: 2em;">
+        <a class="btn-floating btn-large red" href="/photos/new">
+          <i class="material-icons">add</i>
+        </a>
+      </div>
+
+
+
+
+      <footer class="page-footer #e53935 red darken-1">
+         <div class="container">
+            <div class="row">
+               <div class="col l6 s12">
+                  <div class="row">
+                     <div class="col s4"><a href="/"><%= image_tag("logo.svg", class: "responsive-img") %></a></div>
+                  </div>
+                  <p style="color:#dedede"> Bored of having to go to the same places ?</p>
+               </div>
+               <div class="col l4 offset-l2 s12">
+                  <h5 style="color:#eeeeee">Let's Go Somewhere NEW!!</h5>
+                  <ul>
+                     <li><a href="" style="color:#e4e4e4">Blog</a></li>
+                     <li><a class="show_how_it_works" data-no-turbolink="true" href="#" style="color:#e4e4e4">How It Works</a></li>
+                     <li><a href="/invites/new" style="color:#e4e4e4">Invite a Friend</a></li>
+                     <li><a class="modal-trigger" href="#login_modal"style="color:#e4e4e4">Sign In</a></li>
+                     <li><a class="send_feedback" data-no-turbolink="true" href="#"style="color:#e4e4e4">Feedback</a></li>
+                     <li><a href="/pages/privacy-policy" style="color:#e4e4e4">Privacy Policy</a></li>
+                     <li><a href="/pages/terms-of-service" style="color:#e4e4e4">Terms of Service</a></li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+         <div class="footer-copyright #c62828 red darken-3">
+            <div class="container">© 2016 Lookup, Inc.<span class="right">Made with &hearts;</span></div>
+         </div>
+      </footer>
+      <script type="text/javascript">
+         $(document).ready(function(){
+            $('.parallax').parallax();
+          });
+
+
+          $(document).ready(function(){
+            $('ul.tabs').tabs();
+            $(".button-collapse").sideNav();
+
+          });
+                
+      </script>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
+
+   </body>
+</html>

@@ -1,21 +1,24 @@
 source 'https://rubygems.org'
 
-#Added gems
+#added gems
 gem 'devise'
-
+gem 'materialize-sass'
 gem 'geokit'
-
 gem 'geokit-rails'
+gem 'ratyrate', :github => 'wazery/ratyrate'
+gem 'paperclip', '~> 4.2'
+gem 'google-analytics-rails', '1.1.0'
+gem 'mysql2', '>= 0.3.13', '< 0.5'
+gem 'aws-sdk', '< 2.0'
+gem 'figaro'
+gem 'unicorn'
+#added gems
 
-gem 'execjs'
-
-gem 'therubyracer'
-#Added gems
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.4'
-# Use mysql as the database for Active Record
-gem 'mysql2', '~> 0.3.18'
+gem 'rails', '4.2.6'
+# Use sqlite3 as the database for Active Record
+gem 'sqlite3'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -55,4 +58,5 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
 end
+
 

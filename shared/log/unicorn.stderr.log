@@ -1,0 +1,81 @@
+I, [2016-05-27T03:03:52.872579 #23067]  INFO -- : Refreshing Gem list
+I, [2016-05-27T03:03:54.539371 #23067]  INFO -- : listening on addr=/home/ubuntu/lookup/shared/sockets/unicorn.sock fd=11
+I, [2016-05-27T03:03:54.539481 #23067]  INFO -- : worker=0 spawning...
+I, [2016-05-27T03:03:54.540846 #23067]  INFO -- : worker=1 spawning...
+I, [2016-05-27T03:03:54.541453 #23071]  INFO -- : worker=0 spawned pid=23071
+I, [2016-05-27T03:03:54.541562 #23071]  INFO -- : worker=0 ready
+I, [2016-05-27T03:03:54.542346 #23067]  INFO -- : master process ready
+I, [2016-05-27T03:03:54.547675 #23074]  INFO -- : worker=1 spawned pid=23074
+I, [2016-05-27T03:03:54.547792 #23074]  INFO -- : worker=1 ready
+I, [2016-05-27T04:10:23.333693 #23067]  INFO -- : reaped #<Process::Status: pid 23071 exit 0> worker=0
+I, [2016-05-27T04:10:23.333787 #23067]  INFO -- : reaped #<Process::Status: pid 23074 exit 0> worker=1
+I, [2016-05-27T04:10:23.333848 #23067]  INFO -- : master complete
+I, [2016-05-27T04:10:26.104664 #24144]  INFO -- : Refreshing Gem list
+DEPRECATION WARNING: You did not specify a `log_level` in `production.rb`. Currently, the default value for `log_level` is `:info` for the production environment and `:debug` in all other environments. In Rails 5 the default value will be unified to `:debug` across all environments. To preserve the current setting, add the following line to your `production.rb`:
+
+   config.log_level = :info
+
+. (called from block in tsort_each at /home/ubuntu/.rbenv/versions/2.2.3/lib/ruby/2.2.0/tsort.rb:226)
+I, [2016-05-27T04:10:27.603770 #24144]  INFO -- : unlinking existing socket=/home/ubuntu/lookup/shared/sockets/unicorn.sock
+I, [2016-05-27T04:10:27.603918 #24144]  INFO -- : listening on addr=/home/ubuntu/lookup/shared/sockets/unicorn.sock fd=11
+I, [2016-05-27T04:10:27.604005 #24144]  INFO -- : worker=0 spawning...
+I, [2016-05-27T04:10:27.605191 #24144]  INFO -- : worker=1 spawning...
+I, [2016-05-27T04:10:27.605760 #24148]  INFO -- : worker=0 spawned pid=24148
+I, [2016-05-27T04:10:27.605877 #24148]  INFO -- : worker=0 ready
+I, [2016-05-27T04:10:27.606608 #24144]  INFO -- : master process ready
+I, [2016-05-27T04:10:27.611552 #24151]  INFO -- : worker=1 spawned pid=24151
+I, [2016-05-27T04:10:27.611680 #24151]  INFO -- : worker=1 ready
+I, [2016-05-27T04:14:29.746572 #24144]  INFO -- : reaped #<Process::Status: pid 24148 exit 0> worker=0
+I, [2016-05-27T04:14:29.746670 #24144]  INFO -- : reaped #<Process::Status: pid 24151 exit 0> worker=1
+I, [2016-05-27T04:14:29.746734 #24144]  INFO -- : master complete
+I, [2016-05-27T04:15:09.078554 #1130]  INFO -- : Refreshing Gem list
+DEPRECATION WARNING: You did not specify a `log_level` in `production.rb`. Currently, the default value for `log_level` is `:info` for the production environment and `:debug` in all other environments. In Rails 5 the default value will be unified to `:debug` across all environments. To preserve the current setting, add the following line to your `production.rb`:
+
+   config.log_level = :info
+
+. (called from block in tsort_each at /home/ubuntu/.rbenv/versions/2.2.3/lib/ruby/2.2.0/tsort.rb:226)
+I, [2016-05-27T04:15:11.859022 #1130]  INFO -- : unlinking existing socket=/home/ubuntu/lookup/shared/sockets/unicorn.sock
+I, [2016-05-27T04:15:11.859481 #1130]  INFO -- : listening on addr=/home/ubuntu/lookup/shared/sockets/unicorn.sock fd=11
+I, [2016-05-27T04:15:11.859580 #1130]  INFO -- : worker=0 spawning...
+I, [2016-05-27T04:15:11.860493 #1130]  INFO -- : worker=1 spawning...
+I, [2016-05-27T04:15:11.861136 #1130]  INFO -- : master process ready
+I, [2016-05-27T04:15:11.866234 #1134]  INFO -- : worker=0 spawned pid=1134
+I, [2016-05-27T04:15:11.866379 #1134]  INFO -- : worker=0 ready
+I, [2016-05-27T04:15:11.867016 #1136]  INFO -- : worker=1 spawned pid=1136
+I, [2016-05-27T04:15:11.867136 #1136]  INFO -- : worker=1 ready
+I, [2016-05-27T04:15:28.430466 #1130]  INFO -- : reaped #<Process::Status: pid 1134 exit 0> worker=0
+I, [2016-05-27T04:15:28.430558 #1130]  INFO -- : reaped #<Process::Status: pid 1136 exit 0> worker=1
+I, [2016-05-27T04:15:28.430617 #1130]  INFO -- : master complete
+I, [2016-05-27T04:17:12.233065 #1130]  INFO -- : Refreshing Gem list
+DEPRECATION WARNING: You did not specify a `log_level` in `production.rb`. Currently, the default value for `log_level` is `:info` for the production environment and `:debug` in all other environments. In Rails 5 the default value will be unified to `:debug` across all environments. To preserve the current setting, add the following line to your `production.rb`:
+
+   config.log_level = :info
+
+. (called from block in tsort_each at /home/ubuntu/.rbenv/versions/2.2.3/lib/ruby/2.2.0/tsort.rb:226)
+I, [2016-05-27T04:17:14.483591 #1130]  INFO -- : unlinking existing socket=/home/ubuntu/lookup/shared/sockets/unicorn.sock
+I, [2016-05-27T04:17:14.483732 #1130]  INFO -- : listening on addr=/home/ubuntu/lookup/shared/sockets/unicorn.sock fd=11
+I, [2016-05-27T04:17:14.483837 #1130]  INFO -- : worker=0 spawning...
+I, [2016-05-27T04:17:14.484678 #1130]  INFO -- : worker=1 spawning...
+I, [2016-05-27T04:17:14.485324 #1130]  INFO -- : master process ready
+I, [2016-05-27T04:17:14.491448 #1135]  INFO -- : worker=0 spawned pid=1135
+I, [2016-05-27T04:17:14.491595 #1135]  INFO -- : worker=0 ready
+I, [2016-05-27T04:17:14.492186 #1137]  INFO -- : worker=1 spawned pid=1137
+I, [2016-05-27T04:17:14.492309 #1137]  INFO -- : worker=1 ready
+I, [2016-05-27T04:26:55.532411 #1130]  INFO -- : reaped #<Process::Status: pid 1135 exit 0> worker=0
+I, [2016-05-27T04:26:55.532513 #1130]  INFO -- : reaped #<Process::Status: pid 1137 exit 0> worker=1
+I, [2016-05-27T04:26:55.532591 #1130]  INFO -- : master complete
+I, [2016-05-27T04:29:16.253657 #1132]  INFO -- : Refreshing Gem list
+DEPRECATION WARNING: You did not specify a `log_level` in `production.rb`. Currently, the default value for `log_level` is `:info` for the production environment and `:debug` in all other environments. In Rails 5 the default value will be unified to `:debug` across all environments. To preserve the current setting, add the following line to your `production.rb`:
+
+   config.log_level = :info
+
+. (called from block in tsort_each at /home/ubuntu/.rbenv/versions/2.2.3/lib/ruby/2.2.0/tsort.rb:226)
+I, [2016-05-27T04:29:18.525900 #1132]  INFO -- : unlinking existing socket=/home/ubuntu/lookup/shared/sockets/unicorn.sock
+I, [2016-05-27T04:29:18.526057 #1132]  INFO -- : listening on addr=/home/ubuntu/lookup/shared/sockets/unicorn.sock fd=11
+I, [2016-05-27T04:29:18.526144 #1132]  INFO -- : worker=0 spawning...
+I, [2016-05-27T04:29:18.527048 #1132]  INFO -- : worker=1 spawning...
+I, [2016-05-27T04:29:18.527704 #1132]  INFO -- : master process ready
+I, [2016-05-27T04:29:18.534889 #1136]  INFO -- : worker=0 spawned pid=1136
+I, [2016-05-27T04:29:18.535017 #1136]  INFO -- : worker=0 ready
+I, [2016-05-27T04:29:18.535617 #1138]  INFO -- : worker=1 spawned pid=1138
+I, [2016-05-27T04:29:18.535748 #1138]  INFO -- : worker=1 ready

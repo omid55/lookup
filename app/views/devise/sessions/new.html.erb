@@ -1,0 +1,33 @@
+
+<h3 style="color:#26a69a;"> Log in!</h3>
+<div class="container" style = "padding:10px;">
+
+<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+  <div class = "row ">
+    <div class="input-field col s12">
+      <%= f.label :email %>
+      <%= f.email_field :email, autofocus: true, :class => "validate" %>
+    </div>
+
+    <div class="input-field col s12">
+      <%= f.label :password %>
+      <%= f.password_field :password, autocomplete: "off" %>
+    </div>
+
+      <% if devise_mapping.rememberable? -%>
+      <div class="input-field col s12 left-align" style="margin-top:10px">
+        <%= f.check_box :remember_me %>
+        <%= f.label :remember_me %>
+      </div>
+  </div>
+  <% end -%>
+
+  <div class="actions waves-effect waves-light btn" style="margin-top:10px">
+    <%= f.submit "Log in" %>
+  </div>
+<% end %>
+
+<div style="margin-top:10px">
+<%= render "devise/shared/links" %>
+</div>
+</div>

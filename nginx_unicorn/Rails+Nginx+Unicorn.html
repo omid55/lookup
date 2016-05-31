@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<!-- saved from url=(0113)https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04 -->
+<html lang="en" class="wf-proximanova-i4-active wf-proximanova-n3-active wf-proximanova-n4-active wf-proximanova-n6-active wf-proximanova-n7-active wf-active"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>How To Deploy a Rails App with Unicorn and Nginx on Ubuntu 14.04 | DigitalOcean</title>
+
+<meta name="description" content="When you are ready to deploy your Ruby on Rails application, there are many valid setups to consider. This tutorial will help you deploy the production environment of your Ruby on Rails application, with PostgreSQL as the database, using Unicorn and N">
+<meta name="keywords" content="PostgreSQL Ruby on Rails Deployment Nginx">
+
+<meta name="og:title" content="How To Deploy a Rails App with Unicorn and Nginx on Ubuntu 14.04 | DigitalOcean">
+<meta name="og:description" content="When you are ready to deploy your Ruby on Rails application, there are many valid setups to consider. This tutorial will help you deploy the production environment of your Ruby on Rails application, with PostgreSQL as the database, using Unicorn and N">
+<meta name="og:site_name" content="DigitalOcean">
+<meta name="og:type" content="article">
+
+<meta name="twitter:site" content="DigitalOcean">
+<meta name="twitter:title" content="How To Deploy a Rails App with Unicorn and Nginx on Ubuntu 14.04 | DigitalOcean">
+<meta name="twitter:description" content="When you are ready to deploy your Ruby on Rails application, there are many valid setups to consider. This tutorial will help you deploy the production environment of your Ruby on Rails application, with PostgreSQL as the database, using Unicorn and N">
+<meta name="twitter:creator" content="DigitalOcean">
+<meta name="twitter:card" content="photo">
+<meta name="twitter:url" content="https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04">
+
+<meta property="og:image" content="https://community-cdn-digitalocean-com.global.ssl.fastly.net/assets/tutorials/images/large/rails_with_unicorn_tw.jpg?1428609970">
+<meta name="twitter:image" content="https://community-cdn-digitalocean-com.global.ssl.fastly.net/assets/tutorials/images/large/rails_with_unicorn_tw.jpg?1428609970">
+
+  <link rel="canonical" href="https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04">
+
+
+    <link rel="stylesheet" media="all" href="./Rails+Nginx+Unicorn_files/application-ff2c2ce8e4e100a6cfc953f3fefe5349.css">
+    <meta name="csrf-param" content="authenticity_token">
+<meta name="csrf-token" content="8rzhrvLIYDH6zcsPJPqP416oqCJ02uCgBh9DW/eE52aj0GdJcrH/ASQ8tep2UVb9bZ9zgTrkXWfEs0ssRLe1KA==">
+      <script src="./Rails+Nginx+Unicorn_files/bat.js" async=""></script><script async="" src="./Rails+Nginx+Unicorn_files/fbds.js"></script><script type="text/javascript" async="" src="./Rails+Nginx+Unicorn_files/track.js" id="cio-tracker" data-site-id="e7cc779295927747a7c2"></script><script async="" src="./Rails+Nginx+Unicorn_files/gtm.js"></script><script type="text/javascript" async="" src="./Rails+Nginx+Unicorn_files/analytics.min.js"></script><script src="./Rails+Nginx+Unicorn_files/izu1uqu.js"></script><style type="text/css"></style>
+      <style type="text/css">.tk-proxima-nova{font-family:"proxima-nova",sans-serif;}</style><link rel="stylesheet" href="./Rails+Nginx+Unicorn_files/l" media="all"><script>try{Typekit.load({ async: true });}catch(e){}</script>
+    <script src="./Rails+Nginx+Unicorn_files/bugsnag-2.min.js" data-apikey="9ffc01bc3e1fa7891bfd20909d1bfb0e">
+    </script>
+    <!--<script src="//cdn.optimizely.com/js/701281621.js"></script>-->
+    <script type="text/javascript">
+      if(window.analytics=window.analytics||[],window.analytics.included)window.console&&console.error&&console.error("analytics.js included twice");else{window.analytics.included=!0,window.analytics.methods=["identify","group","track","page","pageview","alias","ready","on","once","off","trackLink","trackForm","trackClick","trackSubmit"],window.analytics.factory=function(a){return function(){var n=Array.prototype.slice.call(arguments);return n.unshift(a),window.analytics.push(n),window.analytics}};for(var i=0;i<window.analytics.methods.length;i++){var key=window.analytics.methods[i];window.analytics[key]=window.analytics.factory(key)}window.analytics.load=function(a){var n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+a+"/analytics.min.js";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(n,t)},window.analytics.SNIPPET_VERSION="2.0.9",
+      window.analytics.load("puo3uv968t")}
+      window.analytics.page();
+    </script>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="https://www.digitalocean.com/community/tutorials/feed">
+    <script src="./Rails+Nginx+Unicorn_files/application-dfa527a7130ec8360431144fd7a7e8ef.js"></script>
+    <script>
+  window.featureFlags = {
+    upvotes: false
+  };
+</script>
+
+  <style>.fluidvids {width: 100%; max-width: 100%; position: relative;}.fluidvids-item {position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;}</style><script id="twitter-wjs" src="./Rails+Nginx+Unicorn_files/widgets.js"></script><script id="facebook-jssdk" src="./Rails+Nginx+Unicorn_files/all.js"></script><style type="text/css">.fb_hidden{position:absolute;top:-10000px;z-index:10001}.fb_reposition{overflow:hidden;position:relative}.fb_invisible{display:none}.fb_reset{background:none;border:0;border-spacing:0;color:#000;cursor:auto;direction:ltr;font-family:"lucida grande", tahoma, verdana, arial, sans-serif;font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:1;margin:0;overflow:visible;padding:0;text-align:left;text-decoration:none;text-indent:0;text-shadow:none;text-transform:none;visibility:visible;white-space:normal;word-spacing:normal}.fb_reset>div{overflow:hidden}.fb_link img{border:none}@keyframes fb_transform{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}.fb_animate{animation:fb_transform .3s forwards}
+.fb_dialog{background:rgba(82, 82, 82, .7);position:absolute;top:-10000px;z-index:10001}.fb_reset .fb_dialog_legacy{overflow:visible}.fb_dialog_advanced{padding:10px;-moz-border-radius:8px;-webkit-border-radius:8px;border-radius:8px}.fb_dialog_content{background:#fff;color:#333}.fb_dialog_close_icon{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 0 transparent;_background-image:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yL/r/s816eWC-2sl.gif);cursor:pointer;display:block;height:15px;position:absolute;right:18px;top:17px;width:15px}.fb_dialog_mobile .fb_dialog_close_icon{top:5px;left:5px;right:auto}.fb_dialog_padding{background-color:transparent;position:absolute;width:1px;z-index:-1}.fb_dialog_close_icon:hover{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -15px transparent;_background-image:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yL/r/s816eWC-2sl.gif)}.fb_dialog_close_icon:active{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -30px transparent;_background-image:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yL/r/s816eWC-2sl.gif)}.fb_dialog_loader{background-color:#f6f7f9;border:1px solid #606060;font-size:24px;padding:20px}.fb_dialog_top_left,.fb_dialog_top_right,.fb_dialog_bottom_left,.fb_dialog_bottom_right{height:10px;width:10px;overflow:hidden;position:absolute}.fb_dialog_top_left{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 0;left:-10px;top:-10px}.fb_dialog_top_right{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 -10px;right:-10px;top:-10px}.fb_dialog_bottom_left{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 -20px;bottom:-10px;left:-10px}.fb_dialog_bottom_right{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 -30px;right:-10px;bottom:-10px}.fb_dialog_vert_left,.fb_dialog_vert_right,.fb_dialog_horiz_top,.fb_dialog_horiz_bottom{position:absolute;background:#525252;filter:alpha(opacity=70);opacity:.7}.fb_dialog_vert_left,.fb_dialog_vert_right{width:10px;height:100%}.fb_dialog_vert_left{margin-left:-10px}.fb_dialog_vert_right{right:0;margin-right:-10px}.fb_dialog_horiz_top,.fb_dialog_horiz_bottom{width:100%;height:10px}.fb_dialog_horiz_top{margin-top:-10px}.fb_dialog_horiz_bottom{bottom:0;margin-bottom:-10px}.fb_dialog_iframe{line-height:0}.fb_dialog_content .dialog_title{background:#6d84b4;border:1px solid #365899;color:#fff;font-size:14px;font-weight:bold;margin:0}.fb_dialog_content .dialog_title>span{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yd/r/Cou7n-nqK52.gif) no-repeat 5px 50%;float:left;padding:5px 0 7px 26px}body.fb_hidden{-webkit-transform:none;height:100%;margin:0;overflow:visible;position:absolute;top:-10000px;left:0;width:100%}.fb_dialog.fb_dialog_mobile.loading{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/ya/r/3rhSv5V8j3o.gif) white no-repeat 50% 50%;min-height:100%;min-width:100%;overflow:hidden;position:absolute;top:0;z-index:10001}.fb_dialog.fb_dialog_mobile.loading.centered{width:auto;height:auto;min-height:initial;min-width:initial;background:none}.fb_dialog.fb_dialog_mobile.loading.centered #fb_dialog_loader_spinner{width:100%}.fb_dialog.fb_dialog_mobile.loading.centered .fb_dialog_content{background:none}.loading.centered #fb_dialog_loader_close{color:#fff;display:block;padding-top:20px;clear:both;font-size:18px}#fb-root #fb_dialog_ipad_overlay{background:rgba(0, 0, 0, .45);position:absolute;bottom:0;left:0;right:0;top:0;width:100%;min-height:100%;z-index:10000}#fb-root #fb_dialog_ipad_overlay.hidden{display:none}.fb_dialog.fb_dialog_mobile.loading iframe{visibility:hidden}.fb_dialog_content .dialog_header{-webkit-box-shadow:white 0 1px 1px -1px inset;background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#738ABA), to(#2C4987));border-bottom:1px solid;border-color:#1d4088;color:#fff;font:14px Helvetica, sans-serif;font-weight:bold;text-overflow:ellipsis;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0;vertical-align:middle;white-space:nowrap}.fb_dialog_content .dialog_header table{-webkit-font-smoothing:subpixel-antialiased;height:43px;width:100%}.fb_dialog_content .dialog_header td.header_left{font-size:12px;padding-left:5px;vertical-align:middle;width:60px}.fb_dialog_content .dialog_header td.header_right{font-size:12px;padding-right:5px;vertical-align:middle;width:60px}.fb_dialog_content .touchable_button{background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#4966A6), color-stop(.5, #355492), to(#2A4887));border:1px solid #29487d;-webkit-background-clip:padding-box;-webkit-border-radius:3px;-webkit-box-shadow:rgba(0, 0, 0, .117188) 0 1px 1px inset, rgba(255, 255, 255, .167969) 0 1px 0;display:inline-block;margin-top:3px;max-width:85px;line-height:18px;padding:4px 12px;position:relative}.fb_dialog_content .dialog_header .touchable_button input{border:none;background:none;color:#fff;font:12px Helvetica, sans-serif;font-weight:bold;margin:2px -12px;padding:2px 6px 3px 6px;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}.fb_dialog_content .dialog_header .header_center{color:#fff;font-size:16px;font-weight:bold;line-height:18px;text-align:center;vertical-align:middle}.fb_dialog_content .dialog_content{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/y9/r/jKEcVPZFk-2.gif) no-repeat 50% 50%;border:1px solid #555;border-bottom:0;border-top:0;height:150px}.fb_dialog_content .dialog_footer{background:#f6f7f9;border:1px solid #555;border-top-color:#ccc;height:40px}#fb_dialog_loader_close{float:left}.fb_dialog.fb_dialog_mobile .fb_dialog_close_button{text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}.fb_dialog.fb_dialog_mobile .fb_dialog_close_icon{visibility:hidden}#fb_dialog_loader_spinner{animation:rotateSpinner 1.2s linear infinite;background-color:transparent;background-image:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yD/r/t-wz8gw1xG1.png);background-repeat:no-repeat;background-position:50% 50%;height:24px;width:24px}@keyframes rotateSpinner{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.fb_iframe_widget{display:inline-block;position:relative}.fb_iframe_widget span{display:inline-block;position:relative;text-align:justify}.fb_iframe_widget iframe{position:absolute}.fb_iframe_widget_fluid_desktop,.fb_iframe_widget_fluid_desktop span,.fb_iframe_widget_fluid_desktop iframe{max-width:100%}.fb_iframe_widget_fluid_desktop iframe{min-width:220px;position:relative}.fb_iframe_widget_lift{z-index:1}.fb_hide_iframes iframe{position:relative;left:-10000px}.fb_iframe_widget_loader{position:relative;display:inline-block}.fb_iframe_widget_fluid{display:inline}.fb_iframe_widget_fluid span{width:100%}.fb_iframe_widget_loader iframe{min-height:32px;z-index:2;zoom:1}.fb_iframe_widget_loader .FB_Loader{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/y9/r/jKEcVPZFk-2.gif) no-repeat;height:32px;width:32px;margin-left:-16px;position:absolute;left:50%;z-index:4}</style></head>
+  <body class="tutorials-controller tutorial-single" data-env="production" ,="" data-prefix="/community" data-user-id="" data-facebook-app-id="694818843983011">
+    <script>
+//<![CDATA[
+
+//]]>
+</script>
+<!-- Google Tag Manager -->
+<noscript>&lt;iframe src="//www.googletagmanager.com/ns.html?id=GTM-KHWBBT"
+height="0" width="0" style="display:none;visibility:hidden"&gt;&lt;/iframe&gt;</noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-KHWBBT');</script>
+<!-- End Google Tag Manager -->
+    
+
+    <div class="outside_viewport">
+        <div id="contents-modal" class="modal fade mini-modal" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1>Contents</h1>
+          <button class="close-button icon icon-close-light" data-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+
+          <div class="table-of-contents-modal open tocify"><ul id="tocify-header0" class="tocify-header" style="display: none;"><li class="tocify-item" data-unique="prerequisites"><a>Prerequisites</a></li></ul><ul id="tocify-header1" class="tocify-header" style="display: none;"><li class="tocify-item" data-unique="create-rails-application"><a>Create Rails Application</a></li></ul><ul id="tocify-header2" class="tocify-header" style="display: none;"><li class="tocify-item" data-unique="create-production-database-user"><a>Create Production Database User</a></li></ul><ul id="tocify-header3" class="tocify-header" style="display: none;"><li class="tocify-item" data-unique="configure-database-connection"><a>Configure Database Connection</a></li></ul><ul id="tocify-header4" class="tocify-header" style="display: none;"><li class="tocify-item" data-unique="install-rbenv-vars-plugin"><a>Install rbenv-vars Plugin</a></li></ul><ul id="tocify-header5" class="tocify-header" style="display: none;"><li class="tocify-item" data-unique="create-production-database"><a>Create Production Database</a></li></ul><ul id="tocify-header6" class="tocify-header" style="display: none;"><li class="tocify-item" data-unique="install-unicorn"><a>Install Unicorn</a></li></ul><ul id="tocify-header7" class="tocify-header" style="display: none;"><li class="tocify-item" data-unique="configure-unicorn"><a>Configure Unicorn</a></li></ul><ul id="tocify-header8" class="tocify-header" style="display: none;"><li class="tocify-item" data-unique="create-unicorn-init-script"><a>Create Unicorn Init Script</a></li></ul><ul id="tocify-header9" class="tocify-header" style="display: none;"><li class="tocify-item" data-unique="install-and-configure-nginx"><a>Install and Configure Nginx</a></li></ul><ul id="tocify-header10" class="tocify-header" style="display: none;"><li class="tocify-item" data-unique="conclusion"><a>Conclusion</a></li></ul></div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="share-modal" class="modal fade mini-modal" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1>Share</h1>
+        <button type="button" class="close-button icon icon-close-light" aria-label="close" data-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="social-sharing social-sharing-container">
+          <ul class="top ">
+            <li class="shareBtn" id="sbTwitter">
+              <a href="http://twitter.com/share?text=How%20To%20Deploy%20a%20Rails%20App%20with%20Unicorn%20and%20Nginx%20on%20Ubuntu%2014.04&amp;url=https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04?utm_content=how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04&amp;utm_medium=community&amp;utm_source=twshare" class="share-icon share-popup" title="Share on Twitter">
+                <span class="sIcon icon-bird"></span>
+              </a>
+              <a href="http://twitter.com/share?text=How%20To%20Deploy%20a%20Rails%20App%20with%20Unicorn%20and%20Nginx%20on%20Ubuntu%2014.04&amp;url=https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04?utm_content=how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04&amp;utm_medium=community&amp;utm_source=twshare" class="share-link share-popup" title="Share on Twitter">
+                Twitter
+              </a>
+            </li>
+            <li class="shareBtn" id="sbFacebook">
+              <a class="share-icon facebook-share" href="https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04?utm_content=how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04&amp;utm_medium=community&amp;utm_source=fbshare" onclick="" title="Share on Facebook">
+                <span class="sIcon icon-facebook-B"></span>
+              </a>
+
+              <a class="share-link facebook-share" href="https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04?utm_content=how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04&amp;utm_medium=community&amp;utm_source=fbshare" onclick="" title="Share on Facebook">
+                Facebook
+              </a>
+            </li>
+            <li class="shareBtn" id="sbGoogle">
+              <a href="https://plus.google.com/share?url=https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04?utm_content=how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04&amp;utm_medium=community&amp;utm_source=gpshare" class="share-icon share-popup" title="Share on Google+">
+                <span class="sIcon icon-google-plus-B"></span>
+              </a>
+              <a href="https://plus.google.com/share?url=https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04?utm_content=how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04&amp;utm_medium=community&amp;utm_source=gpshare" class="share-link share-popup" title="Share on Google+">
+                Google+
+              </a>
+            </li>
+            <li class="shareBtn" id="sbYC">
+              <a href="https://news.ycombinator.com/submitlink?t=How%20To%20Deploy%20a%20Rails%20App%20with%20Unicorn%20and%20Nginx%20on%20Ubuntu%2014.04&amp;u=https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04?utm_content=how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04&amp;utm_medium=community&amp;utm_source=hnshare" class="share-icon share-popup" target="_blank" title="Submit to Hacker News">
+                <span class="sIcon icon-hacker-news"></span>
+              </a>
+              <a href="https://news.ycombinator.com/submitlink?t=How%20To%20Deploy%20a%20Rails%20App%20with%20Unicorn%20and%20Nginx%20on%20Ubuntu%2014.04&amp;u=https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04?utm_content=how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04&amp;utm_medium=community&amp;utm_source=hnshare" class="share-link share-popup" target="_blank" title="Submit to Hacker News">
+                Hacker News
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="table-of-contents  tocify" style="top: 200px;"><ul id="tocify-header0" class="tocify-header" style="display: none;"><li class="tocify-item" data-unique="prerequisites"><a>Prerequisites</a></li></ul><ul id="tocify-header1" class="tocify-header" style="display: none;"><li class="tocify-item" data-unique="create-rails-application"><a>Create Rails Application</a></li></ul><ul id="tocify-header2" class="tocify-header" style="display: none;"><li class="tocify-item" data-unique="create-production-database-user"><a>Create Production Database User</a></li></ul><ul id="tocify-header3" class="tocify-header" style="display: none;"><li class="tocify-item" data-unique="configure-database-connection"><a>Configure Database Connection</a></li></ul><ul id="tocify-header4" class="tocify-header" style="display: none;"><li class="tocify-item" data-unique="install-rbenv-vars-plugin"><a>Install rbenv-vars Plugin</a></li></ul><ul id="tocify-header5" class="tocify-header" style="display: none;"><li class="tocify-item" data-unique="create-production-database"><a>Create Production Database</a></li></ul><ul id="tocify-header6" class="tocify-header" style="display: none;"><li class="tocify-item" data-unique="install-unicorn"><a>Install Unicorn</a></li></ul><ul id="tocify-header7" class="tocify-header" style="display: none;"><li class="tocify-item" data-unique="configure-unicorn"><a>Configure Unicorn</a></li></ul><ul id="tocify-header8" class="tocify-header" style="display: none;"><li class="tocify-item" data-unique="create-unicorn-init-script"><a>Create Unicorn Init Script</a></li></ul><ul id="tocify-header9" class="tocify-header" style="display: none;"><li class="tocify-item" data-unique="install-and-configure-nginx"><a>Install and Configure Nginx</a></li></ul><ul id="tocify-header10" class="tocify-header" style="display: none;"><li class="tocify-item" data-unique="conclusion"><a>Conclusion</a></li></ul></div>
+  
+  <div id="share-modal" class="modal fade mini-modal" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1>Share</h1>
+        <button type="button" class="close-button icon icon-close-light" aria-label="close" data-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="social-sharing social-sharing-container">
+          <ul class="bottom ">
+            <li class="shareBtn" id="sbTwitter">
+              <a href="http://twitter.com/share?text=How%20To%20Deploy%20a%20Rails%20App%20with%20Unicorn%20and%20Nginx%20on%20Ubuntu%2014.04&amp;url=https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04?utm_content=how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04&amp;utm_medium=community&amp;utm_source=twshare" class="share-icon share-popup" title="Share on Twitter">
+                <span class="sIcon icon-bird"></span>
+              </a>
+              <a href="http://twitter.com/share?text=How%20To%20Deploy%20a%20Rails%20App%20with%20Unicorn%20and%20Nginx%20on%20Ubuntu%2014.04&amp;url=https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04?utm_content=how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04&amp;utm_medium=community&amp;utm_source=twshare" class="share-link share-popup" title="Share on Twitter">
+                Twitter
+              </a>
+            </li>
+            <li class="shareBtn" id="sbFacebook">
+              <a class="share-icon facebook-share" href="https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04?utm_content=how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04&amp;utm_medium=community&amp;utm_source=fbshare" onclick="" title="Share on Facebook">
+                <span class="sIcon icon-facebook-B"></span>
+              </a>
+
+              <a class="share-link facebook-share" href="https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04?utm_content=how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04&amp;utm_medium=community&amp;utm_source=fbshare" onclick="" title="Share on Facebook">
+                Facebook
+              </a>
+            </li>
+            <li class="shareBtn" id="sbGoogle">
+              <a href="https://plus.google.com/share?url=https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04?utm_content=how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04&amp;utm_medium=community&amp;utm_source=gpshare" class="share-icon share-popup" title="Share on Google+">
+                <span class="sIcon icon-google-plus-B"></span>
+              </a>
+              <a href="https://plus.google.com/share?url=https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04?utm_content=how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04&amp;utm_medium=community&amp;utm_source=gpshare" class="share-link share-popup" title="Share on Google+">
+                Google+
+              </a>
+            </li>
+            <li class="shareBtn" id="sbYC">
+              <a href="https://news.ycombinator.com/submitlink?t=How%20To%20Deploy%20a%20Rails%20App%20with%20Unicorn%20and%20Nginx%20on%20Ubuntu%2014.04&amp;u=https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04?utm_content=how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04&amp;utm_medium=community&amp;utm_source=hnshare" class="share-icon share-popup" target="_blank" title="Submit to Hacker News">
+                <span class="sIcon icon-hacker-news"></span>
+              </a>
+              <a href="https://news.ycombinator.com/submitlink?t=How%20To%20Deploy%20a%20Rails%20App%20with%20Unicorn%20and%20Nginx%20on%20Ubuntu%2014.04&amp;u=https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04?utm_content=how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04&amp;utm_medium=community&amp;utm_source=hnshare" class="share-link share-popup" target="_blank" title="Submit to Hacker News">
+                Hacker News
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+    <div id="newsletter-signup-dialog" class="newsletter-signups-dialog" data-newsletter-signup-dialog="" data-article-target=".content-body">
+  <div class="pull-right">
+  <a href="javascript:;" class="newsletter-signups-dialog-dismiss" data-newsletter-signup-dismiss="">×</a>
+
+</div>
+<h4 class="newsletter-signups-dialog-title">
+  Sign up for our newsletter.
+</h4>
+<p class="newsletter-signups-dialog-description">
+  Get the latest tutorials on SysAdmin and open source topics.
+</p>
+<form class="newsletter-signup" id="new_newsletter_signup" data-newsletter-signup="true" action="https://www.digitalocean.com/community/newsletter_signup" accept-charset="UTF-8" data-remote="true" method="post"><input name="utf8" type="hidden" value="✓">
+
+  <input data-newsletter-signup-field="url" type="hidden" name="newsletter_signup[url]" id="newsletter_signup_url">
+  <input data-newsletter-signup-field="title" type="hidden" name="newsletter_signup[title]" id="newsletter_signup_title">
+
+  <div class="newsletter-signup-ajax-error" data-newsletter-signup-ajax-error=""></div>
+
+
+  <div class="form-group">
+    <input placeholder="email@example.com" required="required" class="field" type="email" name="newsletter_signup[email]" id="newsletter_signup_email">
+  </div>
+
+  <button data-disable-with="Sign Up" class="button blue-button">
+    Sign Up
+  </button>
+
+</form>
+
+</div>
+
+
+    </div>
+
+      <div class="mobile-nav">
+  
+<div class="account-buttons">
+    <div id="entrance">
+      <a id="sign-up" class="button" href="https://www.digitalocean.com/community/auth/digitalocean?display=sessionless+register">Sign Up</a>
+      <a id="log-in" class="button" href="https://www.digitalocean.com/community/auth/digitalocean">Log In</a>
+    </div>
+</div>
+
+  <button type="button" aria-label="close" class="close-panel icon-close"></button>
+
+  <form class="mobile-search" role="search" action="https://www.digitalocean.com/community/search" accept-charset="UTF-8" method="get"><input name="utf8" type="hidden" value="✓">
+    <span class="icon icon-search-thin"></span>
+    <input type="text" name="q" id="q" title="Search" placeholder="Search">
+    <button name="button" type="submit" class="icon-btn">submit</button>
+</form>
+  
+<nav>
+
+  <ul>
+    <li><a href="https://www.digitalocean.com/community/tutorials">Tutorials</a></li>
+    <li><a href="https://www.digitalocean.com/community/questions">Questions</a></li>
+    <li><a href="https://www.digitalocean.com/community/projects">Projects</a></li>
+    <li><a href="https://www.meetup.com/pro/digitalocean/?utm_source=do_community" target="_blank">Meetups</a></li>
+    <li class="mobile-nav-only"><a href="https://www.digitalocean.com/">Main Site</a></li>
+  </ul>
+</nav>
+
+  
+</div>
+
+      
+      <header>
+  <div class="flash-container"></div>
+
+  <div class="main-menu-container">
+    <div class="wrapper">
+      <div class="logo">
+        <a class="" href="https://www.digitalocean.com/">
+          <span class="icon icon-logo"></span>
+</a>
+        <a class="" href="https://www.digitalocean.com/community">
+          <span class="logo-community-text">Community</span>
+</a>      </div>
+
+      <a class="mobile-nav-toggle icon-menu-thin" data-role="left">
+        <span>Menu</span>
+      </a>
+
+      
+<nav>
+
+  <ul>
+    <li><a href="https://www.digitalocean.com/community/tutorials">Tutorials</a></li>
+    <li><a href="https://www.digitalocean.com/community/questions">Questions</a></li>
+    <li><a href="https://www.digitalocean.com/community/projects">Projects</a></li>
+    <li><a href="https://www.meetup.com/pro/digitalocean/?utm_source=do_community" target="_blank">Meetups</a></li>
+    <li class="mobile-nav-only"><a href="https://www.digitalocean.com/">Main Site</a></li>
+  </ul>
+</nav>
+
+
+      
+<div class="account-buttons">
+    <div id="entrance">
+      <a id="sign-up" class="button" href="https://www.digitalocean.com/community/auth/digitalocean?display=sessionless+register">Sign Up</a>
+      <a id="log-in" class="button" href="https://www.digitalocean.com/community/auth/digitalocean">Log In</a>
+    </div>
+</div>
+      <div class="header-search open">
+  <form action="https://www.digitalocean.com/community/search" accept-charset="UTF-8" method="get"><input name="utf8" type="hidden" value="✓">
+    <span class="icon icon-search-thin"></span>
+    <input type="text" name="q" id="q" title="Search" placeholder="Search" autocomplete="off" spellcheck="off" class="header-search-input" data-algolia-application-id="6ZHEUVKJ88" data-algolia-api-key="c5470567eae7fa1177d43222e18ba086">
+    <button name="button" type="submit" class="icon-btn">submit</button>
+</form></div>
+
+<div class="search-results-dropdown dropdown" data-root-path="https://www.digitalocean.com/community">
+  <div class="container">
+    <div class="header-search-results-list"></div>
+
+    <div id="btn-wrap">
+      <a class="more-search-results" data-search-path="/community/search" href="https://www.digitalocean.com/community/search">
+        <span class="icon-mag"></span>
+        View All Results
+</a>    </div>
+  </div>
+</div>
+
+<script type="text/template" id="autocomplete-hits-template">
+  <div class="inner-search">
+    <ul>
+        {{#hits}}
+          <li>
+            <span class='icon icon-{{type}}'></span>
+            <a href='{{url}}'>{{{_highlightResult.title.value}}}</a>
+          </li>
+        {{/hits}}
+    </ul>
+  </div>
+</script>
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+
+  <div class="wrapper">
+    
+  </div>
+</header>
+
+
+      
+
+      <div class="wrapper layout-wrapper">
+
+        
+
+
+
+
+
+<div class="section-content section-content-growable content content-has-mobile-image">
+
+  <div class="postable-info-bar-container">
+  <div class="postable-info-bar">
+    <div class="left-section">
+        <div class="tutorial-author-avatar">
+          <a href="https://www.digitalocean.com/community/users/manicas"><div class="mod-avatar mod-avatar-small"><img alt="manicas" class="avatar avatar-small" src="./Rails+Nginx+Unicorn_files/695da9dd73504edfc622c9be380cb3cb" width="80" height="80"><span class="mod-star" title="" data-toggle="tooltip" data-container="body" data-original-title="MOD"><span class="mod-star-icon"></span></span></div></a>
+        </div>
+        <div class="author-and-date">
+          <div class="tutorial-author">
+            <div class="by">By: </div>
+            <a href="https://www.digitalocean.com/community/users/manicas">Mitchell Anicas</a>
+          </div>
+        </div>
+
+    </div>
+
+    <div class="right-section">
+      
+
+
+        <div class="section-item section-item-subscribe">
+          <span class="opt-in-switch off signed-out-subscribe">
+            <span class="subscribe-label">
+              <span class="icon icon-subscribe"></span>
+              <span class="subscription-label subscribe">Subscribe</span>
+              <span class="icon icon-subscribed"></span>
+              <span class="subscription-label subscribed">Subscribed</span>
+            </span>
+            <a data-toggle="modal" data-target="#sign-in-modal" class="mini-switch-container" href="javascript:void(0);"><div class="mini-switch off signed-out-subscribe"><div class="switch-handle"></div></div></a>
+          </span>
+        </div>
+
+      <div class="section-item social-sharing-item">
+        <div class="sharing">
+  <a class="share-button" href="https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04#" data-toggle="modal" data-target="#share-modal">
+    <span class="icon icon-share-square"></span>
+    <span class="share-button-text">Share</span>
+  </a>
+</div>
+
+      </div>
+
+        <div class="section-item table-of-contents-triggers"><div class="toc-trigger ">
+  <a href="javascript:void(0);">
+    <span class="icon icon-contents"></span>
+    <span class="title">Contents</span>
+    <span class="icon icon-close-light"></span>
+    <span class="icon icon-arrow-down"></span>
+  </a>
+</div>
+
+
+
+<div class="toc-trigger-mobile" data-toggle="modal" data-target="#contents-modal">
+  <a href="javascript:void(0);">
+    <span class="icon icon-contents"></span>
+    <span class="title">Contents</span>
+    <span class="icon icon-arrow-down"></span>
+  </a>
+</div>
+
+
+</div>
+
+    </div>
+  </div>
+</div>
+
+
+    <img alt="How To Deploy a Rails App with Unicorn and Nginx on Ubuntu 14.04" title="How To Deploy a Rails App with Unicorn and Nginx on Ubuntu 14.04" class="tutorial-image-mobile" src="./Rails+Nginx+Unicorn_files/rails_with_unicorn_tw.jpg">
+
+  <div class="container tutorial-header">
+      <img alt="How To Deploy a Rails App with Unicorn and Nginx on Ubuntu 14.04" title="How To Deploy a Rails App with Unicorn and Nginx on Ubuntu 14.04" class="tutorial-image" src="./Rails+Nginx+Unicorn_files/rails_with_unicorn_tw.jpg">
+
+      <div class="info-cta">
+    <a class="icon-close-light" href="javascript:void();"></a>
+    We hope you find this tutorial helpful. In addition to guides like this one, we provide simple cloud infrastructure for developers. <a href="https://www.digitalocean.com/?utm_medium=community&amp;utm_source=community_gencta&amp;utm_campaign=needaserver&amp;utm_content=how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04">
+        Learn more →
+</a>  </div>
+
+
+    <h1 class="content-title">How To Deploy a Rails App with Unicorn and Nginx on Ubuntu 14.04</h1>
+
+    <span class="meta-section timestamp">
+        Posted <span class="tutorial-date">Mar 26, 2015</span>
+    </span>
+
+    <span class="meta-section upvotes">
+      <div class="upvotes upvoted tutorial-upvote upvote-parent"><form data-upvotable="tutorial_1546" data-upvotable-type="tutorial" class="upvote-form upvote signed-out-upvote" action="https://www.digitalocean.com/community/upvotes/toggle?upvote%5Bupvotable_id%5D=1546&amp;upvote%5Bupvotable_type%5D=Tutorial" accept-charset="UTF-8" data-remote="true" method="post"><input name="utf8" type="hidden" value="✓"><input type="hidden" name="_method" value="patch"><input type="hidden" name="authenticity_token" value="8rzhrvLIYDH6zcsPJPqP416oqCJ02uCgBh9DW/eE52aj0GdJcrH/ASQ8tep2UVb9bZ9zgTrkXWfEs0ssRLe1KA==">
+    <button type="submit" disabled="disabled" data-toggle="modal" data-target="#sign-in-modal">
+      <span class="icon-upvote-heart-small upvote-heart" data-toggle="modal" data-target="#sign-in-modal" data-return-url="" title="Do you find this tutorial helpful? Show the author by Hearting it!" data-placement="bottom"></span>
+    </button>
+
+</form><span class="upvote-text"><span class="hearted-text">Hearted</span><span class="heart-text">Heart</span></span><div class="upvote-count ">42</div></div>
+    </span>
+
+    <span class="meta-section pageviews"><span class="icon icon-eye v-mid"></span><span class="views-count v-mid">101.8k</span><span class="sr-only"> views</span></span>
+
+    <span class="meta-section tags">
+      <a class="tag" href="https://www.digitalocean.com/community/tags/ruby-on-rails?type=tutorials">Ruby on Rails</a> <a class="tag" href="https://www.digitalocean.com/community/tags/deployment?type=tutorials">Deployment</a> <a class="tag" href="https://www.digitalocean.com/community/tags/postgresql?type=tutorials">PostgreSQL</a> <a class="tag" href="https://www.digitalocean.com/community/tags/nginx?type=tutorials">Nginx</a>
+      <a class="tag" href="https://www.digitalocean.com/community/tags/ubuntu?type=tutorials">Ubuntu</a>
+    </span>
+  </div>
+
+  <div class="container">
+    
+  </div>
+
+    <div class="content-body tutorial-content" data-growable-markdown="">
+      <h3 id="introduction">Introduction</h3>
+
+<p>When you are ready to deploy your Ruby on Rails application, there are many valid setups to consider. This tutorial will help you deploy the production environment of your Ruby on Rails application, with PostgreSQL as the database, using Unicorn and Nginx on Ubuntu 14.04.</p>
+
+<p>Unicorn is an application server, like <a href="https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-passenger-and-nginx-on-ubuntu-14-04">Passenger</a> or <a href="https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-puma-and-nginx-on-ubuntu-14-04">Puma</a>, that enables your Rails application to process requests concurrently. As Unicorn is not designed to be accessed by users directly, we will use Nginx as a reverse proxy that will buffer requests and responses between users and your Rails application.</p>
+
+<div name="prerequisites" data-unique="prerequisites"></div><h2 id="prerequisites">Prerequisites</h2>
+
+<p>This tutorial assumes that you have an Ubuntu 14.04 server with the following software installed, on the user that will deploy the application:</p>
+
+<ul>
+<li><a href="https://www.digitalocean.com/community/tutorials/how-to-install-ruby-on-rails-with-rbenv-on-ubuntu-14-04">Ruby on Rails, using rbenv</a></li>
+<li><a href="https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-ruby-on-rails-application-on-ubuntu-14-04">PostgreSQL with Rails</a></li>
+</ul>
+
+<p>If you do not have that set up already, follow the tutorials that are linked above. We will assume that your user is called <strong>deploy</strong>.</p>
+
+<p>Also, this tutorial does not cover how to set up your development or test environments. If you need help with that, follow the example in the PostgreSQL with Rails tutorial.</p>
+
+<div name="create-rails-application" data-unique="create-rails-application"></div><h2 id="create-rails-application">Create Rails Application</h2>
+
+<p>Ideally, you already have a Rails application that you want to deploy. If this is the case, you may skip this section, and make the appropriate substitutions while following along. If not, the first step is to create a new Rails application that uses PostgreSQL as its database.</p>
+
+<p>This command will create a new Rails application, named "appname" that will use PostgreSQL as the database. Feel free to substitute the highlighted "appname" with something else:</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">rails new <span class="highlight">appname</span> -d postgresql
+</li></ul></code></pre>
+<p>Then change into the application directory:</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">cd <span class="highlight">appname</span>
+</li></ul></code></pre>
+<p>Let's take a moment to create the PostgreSQL user that will be used by the production environment of your Rails application.</p>
+
+<div name="create-production-database-user" data-unique="create-production-database-user"></div><h2 id="create-production-database-user">Create Production Database User</h2>
+
+<p>To keep things simple, let's name the production database user the same as your application name. For example, if your application is called "appname", you should create a PostgreSQL user like this:</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">sudo -u postgres createuser -s <span class="highlight">appname</span>
+</li></ul></code></pre>
+<p>We want to set the database user's password, so enter the PostgreSQL console like this:</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">sudo -u postgres psql
+</li></ul></code></pre>
+<p>Then set the password for the database user, "appname" in the example, like this:</p>
+<pre class="code-pre custom_prefix"><code langs=""><ul class="prefixed"><li class="line" prefix="postgres=#">\password <span class="highlight">appname</span>
+</li></ul></code></pre>
+<p>Enter your desired password and confirm it.</p>
+
+<p>Exit the PostgreSQL console with this command:</p>
+<pre class="code-pre custom_prefix"><code langs=""><ul class="prefixed"><li class="line" prefix="postgres=#">\q
+</li></ul></code></pre>
+<p>Now we're ready to configure the your application with the proper database connection information.</p>
+
+<div name="configure-database-connection" data-unique="configure-database-connection"></div><h2 id="configure-database-connection">Configure Database Connection</h2>
+
+<p>Ensure that you are in your application's root directory (<code>cd ~/<span class="highlight">appname</span></code>).</p>
+
+<p>Open your application's database configuration file in your favorite text editor. We'll use vi:</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">vi config/database.yml
+</li></ul></code></pre>
+<p>Under the <code>default</code> section, find the line that says "pool: 5" and add the following line under it (if it doesn't already exist):</p>
+<pre class="code-pre "><code langs="">  host: localhost
+</code></pre>
+<p>If you scroll to the bottom of the file, you will notice that the <code>production</code> section is set the following:</p>
+<pre class="code-pre "><code langs="">  username: <span class="highlight">appname</span>
+  password: &lt;%= ENV['<span class="highlight">APPNAME</span>_DATABASE_PASSWORD'] %&gt;
+</code></pre>
+<p>If your production username doesn't match the database user that you created earlier, set it now.</p>
+
+<p>Note that the database password is configured to be read by an environment variable, <code><span class="highlight">APPNAME</span>_DATABASE_PASSWORD</code>. It is considered best practice to keep production passwords and secrets outside of your application codebase, as they can easily be exposed if you are using a distributed version control system such as Git. We will go over how to set up the database authentication with environment variables next.</p>
+
+<div name="install-rbenv-vars-plugin" data-unique="install-rbenv-vars-plugin"></div><h2 id="install-rbenv-vars-plugin">Install rbenv-vars Plugin</h2>
+
+<p>Before deploying a production Rails application, you should set the production secret key and database password using environment variables. An easy way to manage environment variables, which we can use to load passwords and secrets into our application at runtime, is to use the <strong>rbenv-vars</strong> plugin.</p>
+
+<p>To install the rbenv-vars plugin, simply change to the <code>.rbenv/plugins</code> directory and clone it from GitHub. For example, if rbenv is installed in your home directory, run these commands:</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">cd ~/.rbenv/plugins
+</li><li class="line" prefix="$">git clone https://github.com/sstephenson/rbenv-vars.git
+</li></ul></code></pre>
+<h3 id="set-environment-variables">Set Environment Variables</h3>
+
+<p>Now that the rbenv-vars plugin is installed, let's set up the required environment variables.</p>
+
+<p>First, generate the secret key, which will be used to verify the integrity of signed cookies:</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">cd ~/appname
+</li><li class="line" prefix="$">rake secret
+</li></ul></code></pre>
+<p>Copy the secret key that is generated, then open the <code>.rbenv-vars</code> file with your favorite editor. We will use vi:</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">vi .rbenv-vars
+</li></ul></code></pre>
+<p>Any environment variables that you set here can be read by your Rails application.</p>
+
+<p>First, set the <code>SECRET_KEY_BASE</code> variable like this (replace the highlighted text with the secret that you just generated and copied):</p>
+<pre class="code-pre "><code langs="">SECRET_KEY_BASE=<span class="highlight">your_generated_secret</span>
+</code></pre>
+<p>Next, set the <code><span class="highlight">APPNAME</span>_DATABASE_PASSWORD</code> variable like this (replace the highlighted "APPNAME" with your your application name, and "prod_db_pass" with your production database user password):</p>
+<pre class="code-pre "><code langs=""><span class="highlight">APPNAME</span>_DATABASE_PASSWORD=<span class="highlight">prod_db_pass</span>
+</code></pre>
+<p>Save and exit.</p>
+
+<p>You may view which environment variables are set for your application with the rbenv-vars plugin by running this command:</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">rbenv vars
+</li></ul></code></pre>
+<p>If you change your secret or database password, update your <code>.rbenv-vars</code> file. Be careful to keep this file private, and don't include it any public code repositories.</p>
+
+<div name="create-production-database" data-unique="create-production-database"></div><h2 id="create-production-database">Create Production Database</h2>
+
+<p>Now that your application is configured to talk to your PostgreSQL database, let's create the production database:</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">RAILS_ENV=production rake db:create
+</li></ul></code></pre>
+<h3 id="generate-a-controller">Generate a Controller</h3>
+
+<p>If you are following along with the example, we will generate a scaffold controller so our application will have something to look at:</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">rails generate scaffold Task title:string note:text
+</li></ul></code></pre>
+<p>Now run this command to update the production database:</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">RAILS_ENV=production rake db:migrate
+</li></ul></code></pre>
+<h3 id="precompile-assets">Precompile Assets</h3>
+
+<p>At this point, the application should work but you will need to precompile its assets so that any images, CSS, and scripts will load. To do so, run this command:</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">RAILS_ENV=production rake assets:precompile
+</li></ul></code></pre>
+<h3 id="test-application">Test Application</h3>
+
+<p>To test out if your application works, you can run the production environment, and bind it to the public IP address of your server (substitute your server's public IP address):</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">RAILS_ENV=production rails server --binding=<span class="highlight">server_public_IP</span>
+</li></ul></code></pre>
+<p>Now visit this URL in a web browser:</p>
+<pre class="code-pre "><code langs="">http://<span class="highlight">server_public_IP</span>:3000/tasks
+</code></pre>
+<p>If it's working properly, you should see this page:</p>
+
+<p><img src="./Rails+Nginx+Unicorn_files/tasks.png" alt="Tasks controller"></p>
+
+<p>Go back to your Rails server, and press <code>Ctrl-c</code> to stop the application.</p>
+
+<div name="install-unicorn" data-unique="install-unicorn"></div><h2 id="install-unicorn">Install Unicorn</h2>
+
+<p>Now we are ready to install Unicorn.</p>
+
+<p>An easy way to do this is to add it to your application's <code>Gemfile</code>. Open the Gemfile in your favorite editor (make sure you are in your application's root directory):</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">vi Gemfile
+</li></ul></code></pre>
+<p>At the end of the file, add the Unicorn gem with this line:</p>
+<pre class="code-pre "><code langs="">gem 'unicorn'
+</code></pre>
+<p>Save and exit.</p>
+
+<p>To install Unicorn, and any outstanding dependencies, run Bundler:</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">bundle
+</li></ul></code></pre>
+<p>Unicorn is now installed, but we need to configure it.</p>
+
+<div name="configure-unicorn" data-unique="configure-unicorn"></div><h2 id="configure-unicorn">Configure Unicorn</h2>
+
+<p>Let's add our Unicorn configuration to <code>config/unicorn.rb</code>. Open the file in a text editor:</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">vi config/unicorn.rb
+</li></ul></code></pre>
+<p>Copy and paste this configuration into the file:</p>
+<pre class="code-pre "><code langs=""># set path to application
+app_dir = File.expand_path("../..", __FILE__)
+shared_dir = "#{app_dir}/shared"
+working_directory app_dir
+
+
+# Set unicorn options
+worker_processes 2
+preload_app true
+timeout 30
+
+# Set up socket location
+listen "#{shared_dir}/sockets/unicorn.sock", :backlog =&gt; 64
+
+# Logging
+stderr_path "#{shared_dir}/log/unicorn.stderr.log"
+stdout_path "#{shared_dir}/log/unicorn.stdout.log"
+
+# Set master PID location
+pid "#{shared_dir}/pids/unicorn.pid"
+</code></pre>
+<p>Save and exit. This configures Unicorn with the location of your application, and the location of its socket, logs, and PIDs. Feel free to modify the file, or add any other options that you require.</p>
+
+<p>Now create the directories that were referred to in the configuration file:</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">mkdir -p shared/pids shared/sockets shared/log
+</li></ul></code></pre>
+<div name="create-unicorn-init-script" data-unique="create-unicorn-init-script"></div><h2 id="create-unicorn-init-script">Create Unicorn Init Script</h2>
+
+<p>Let's create an init script so we can easily start and stop Unicorn, and ensure that it will start on boot.</p>
+
+<p>Create a script and open it for editing with this command (replace the highlighted part with your application name, if you wish):</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">sudo vi /etc/init.d/unicorn_<span class="highlight">appname</span>
+</li></ul></code></pre>
+<p>Copy and paste the following code block into it, and be sure to substitute <code>USER</code> and <code>APP_NAME</code> (highlighted) with the appropriate values:</p>
+<pre class="code-pre "><code langs="">#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          unicorn
+# Required-Start:    $all
+# Required-Stop:     $all
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: starts the unicorn app server
+# Description:       starts unicorn using start-stop-daemon
+### END INIT INFO
+
+set -e
+
+USAGE="Usage: $0 &lt;start|stop|restart|upgrade|rotate|force-stop&gt;"
+
+# app settings
+USER="<span class="highlight">deploy</span>"
+APP_NAME="<span class="highlight">appname</span>"
+APP_ROOT="/home/$USER/$APP_NAME"
+ENV="production"
+
+# environment settings
+PATH="/home/$USER/.rbenv/shims:/home/$USER/.rbenv/bin:$PATH"
+CMD="cd $APP_ROOT &amp;&amp; bundle exec unicorn -c config/unicorn.rb -E $ENV -D"
+PID="$APP_ROOT/shared/pids/unicorn.pid"
+OLD_PID="$PID.oldbin"
+
+# make sure the app exists
+cd $APP_ROOT || exit 1
+
+sig () {
+  test -s "$PID" &amp;&amp; kill -$1 `cat $PID`
+}
+
+oldsig () {
+  test -s $OLD_PID &amp;&amp; kill -$1 `cat $OLD_PID`
+}
+
+case $1 in
+  start)
+    sig 0 &amp;&amp; echo &gt;&amp;2 "Already running" &amp;&amp; exit 0
+    echo "Starting $APP_NAME"
+    su - $USER -c "$CMD"
+    ;;
+  stop)
+    echo "Stopping $APP_NAME"
+    sig QUIT &amp;&amp; exit 0
+    echo &gt;&amp;2 "Not running"
+    ;;
+  force-stop)
+    echo "Force stopping $APP_NAME"
+    sig TERM &amp;&amp; exit 0
+    echo &gt;&amp;2 "Not running"
+    ;;
+  restart|reload|upgrade)
+    sig USR2 &amp;&amp; echo "reloaded $APP_NAME" &amp;&amp; exit 0
+    echo &gt;&amp;2 "Couldn't reload, starting '$CMD' instead"
+    $CMD
+    ;;
+  rotate)
+    sig USR1 &amp;&amp; echo rotated logs OK &amp;&amp; exit 0
+    echo &gt;&amp;2 "Couldn't rotate logs" &amp;&amp; exit 1
+    ;;
+  *)
+    echo &gt;&amp;2 $USAGE
+    exit 1
+    ;;
+esac
+</code></pre>
+<p>Save and exit. This will allow you to use <code>service unicorn_<span class="highlight">appname</span></code> to start and stop your Unicorn and your Rails application.</p>
+
+<p>Update the script's permissions and enable Unicorn to start on boot:</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">sudo chmod 755 /etc/init.d/unicorn_appname
+</li><li class="line" prefix="$">sudo update-rc.d unicorn_appname defaults
+</li></ul></code></pre>
+<p>Let's start it now:</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">sudo service unicorn_<span class="highlight">appname</span> start
+</li></ul></code></pre>
+<p>Now your Rails application's production environment is running under Unicorn, and it's listening on the <code>shared/sockets/unicorn.sock</code> socket. Before your application will be accessible to an outside user, you must set up the Nginx reverse proxy.</p>
+
+<div name="install-and-configure-nginx" data-unique="install-and-configure-nginx"></div><h2 id="install-and-configure-nginx">Install and Configure Nginx</h2>
+
+<p>Install Nginx using apt-get:</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">sudo apt-get install nginx
+</li></ul></code></pre>
+<p>Now open the default server block with a text editor:</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">sudo vi /etc/nginx/sites-available/default
+</li></ul></code></pre>
+<p>Replace the contents of the file with the following code block. Be sure to replace the the highlighted parts with the appropriate username and application name:</p>
+<pre class="code-pre "><code langs="">upstream app {
+    # Path to Unicorn SOCK file, as defined previously
+    server unix:/home/<span class="highlight">deploy</span>/<span class="highlight">appname</span>/shared/sockets/unicorn.sock fail_timeout=0;
+}
+
+server {
+    listen 80;
+    server_name localhost;
+
+    root /home/<span class="highlight">deploy</span>/<span class="highlight">appname</span>/public;
+
+    try_files $uri/index.html $uri @app;
+
+    location @app {
+        proxy_pass http://app;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+    }
+
+    error_page 500 502 503 504 /500.html;
+    client_max_body_size 4G;
+    keepalive_timeout 10;
+}
+</code></pre>
+<p>Save and exit. This configures Nginx as a reverse proxy, so HTTP requests get forwarded to the Unicorn application server via a Unix socket. Feel free to make any changes as you see fit.</p>
+
+<p>Restart Nginx to put the changes into effect:</p>
+<pre class="code-pre command"><code langs=""><ul class="prefixed"><li class="line" prefix="$">sudo service nginx restart
+</li></ul></code></pre>
+<p>Now the production environment of your Rails application is accessible via your server's public IP address or FQDN. To access the Tasks controller that we created earlier, visit your application server in a web browser:</p>
+<pre class="code-pre "><code langs="">http://<span class="highlight">server_public_IP</span>/tasks
+</code></pre>
+<p>You should see the same page that you saw the first time you tested your application, but now it's being served through Nginx and Unicorn.</p>
+
+<div name="conclusion" data-unique="conclusion"></div><h2 id="conclusion">Conclusion</h2>
+
+<p>Congratulations! You have deployed the production environment of your Ruby on Rails application using Nginx and Unicorn.</p>
+
+<p>If you are looking to improve your production Rails application deployment, you should check out our tutorial series on <a href="https://www.digitalocean.com/community/tutorial_series/how-to-use-capistrano-to-automate-deployments">How To Use Capistrano to Automate Deployments</a>. The series is based on CentOS, but it should still be helpful in automating your deployments.</p>
+
+    </div>
+</div>
+
+<div class="tutorial-footer">
+  <div class="tutorial-footer-details">
+
+  <div class="section-content tutorial-contributors one">
+      <div class="tutorial-footer-user">
+        <div class="tutorial-footer-user-avatar-container">
+          <a href="https://www.digitalocean.com/community/users/manicas"><div class="mod-avatar mod-avatar-small"><img alt="manicas" class="avatar avatar-small" src="./Rails+Nginx+Unicorn_files/695da9dd73504edfc622c9be380cb3cb" width="80" height="80"><span class="mod-star" title="" data-toggle="tooltip" data-container="body" data-original-title="MOD"><span class="mod-star-icon"></span></span></div></a>
+        </div>
+        <div class="user-info">
+          <div class="tutorial-user-type">Author:</div>
+          <a href="https://www.digitalocean.com/community/users/manicas">Mitchell Anicas</a>
+        </div>
+      </div>
+
+
+  </div>
+</div>
+
+
+  
+  <div class="tutorial-ctas">
+  <div class="section-content">
+    <div class="cta-description">
+      <h2>Spin up an SSD cloud server in under a minute.</h2>
+
+      <p>Simple setup. Full root access. Straightforward pricing.</p>
+
+      <a class="cloud-tutorial-cta" href="https://www.digitalocean.com/?utm_medium=community&amp;utm_source=community_gencta&amp;utm_campaign=needaserver&amp;utm_content=how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04">Deploy Server</a>
+    </div>
+  </div>
+</div>
+    <div class="related-tutorials">
+    <div class="section-content">
+      <h2>Related Tutorials</h2>
+
+      <ul>
+        <li><a class="related-link" href="https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-azk">How To Deploy a Rails App with azk</a></li>
+<li><a class="related-link" href="https://www.digitalocean.com/community/tutorials/blueprint-how-ghost-migrated-from-dedicated-servers-to-digitalocean">Blueprint: How Ghost Migrated From Dedicated Servers to DigitalOcean</a></li>
+<li><a class="related-link" href="https://www.digitalocean.com/community/tutorials/how-to-deploy-a-symfony-application-to-production-on-ubuntu-14-04">How To Deploy a Symfony Application to Production on Ubuntu 14.04</a></li>
+<li><a class="related-link" href="https://www.digitalocean.com/community/tutorials/how-to-deploy-a-hugo-site-to-production-with-git-hooks-on-ubuntu-14-04">How To Deploy a Hugo Site to Production with Git Hooks on Ubuntu 14.04</a></li>
+<li><a class="related-link" href="https://www.digitalocean.com/community/tutorials/how-to-use-blue-green-deployments-to-release-software-safely">How To Use Blue-Green Deployments to Release Software Safely</a></li>
+
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<div class="content-comments">
+  <div class="section-content">
+    <div class="tutorial commentable" id="tutorial_1546">
+
+  <div class="comments-header">
+    <h4 class="comments-count"><span>93 Comments</span></h4>
+  </div>
+
+  <div class="response response-form no-avatar">
+  <div class="js-display-on-error flash error hidden"></div>
+
+
+  <form class="content-form disabled-form" id="new_comment" action="https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04/comments" accept-charset="UTF-8" data-remote="true" method="post"><input name="utf8" type="hidden" value="✓" disabled="disabled">
+
+    <div class="meltdown_wrap" style="height: auto;"><div class="meltdown_topmargin"></div><div class="meltdown_bar"><ul class="meltdown_controls meltdown_controls_preview"><li class="meltdown_control-preview meltdown_control meltdown_controlbutton disabled" title="" data-original-title="Toggle Preview"><span>Preview</span></li></ul><div class="preview-header">Markdown Preview</div><ul class="meltdown_controls meltdown_controls_main"><li class="meltdown_control-bold meltdown_control meltdown_controlbutton disabled" title="" data-original-title="Bold"><span unselectable="on">B</span></li><li class="meltdown_control-italics meltdown_control meltdown_controlbutton disabled" title="" data-original-title="Italics"><span unselectable="on">I</span></li><li class="meltdown_control-h1 meltdown_control meltdown_controlbutton disabled" title="" data-original-title="Header 1"><span unselectable="on">H1</span></li><li class="meltdown_control-h2 meltdown_control meltdown_controlbutton disabled" title="" data-original-title="Header 2"><span unselectable="on">H2</span></li><li class="meltdown_control-h3 meltdown_control meltdown_controlbutton disabled" title="" data-original-title="Header 3"><span unselectable="on">H3</span></li><li class="meltdown_control-ul meltdown_control meltdown_controlbutton disabled" title="" data-original-title="Unordered List"><span unselectable="on">UL</span></li><li class="meltdown_control-ol meltdown_control meltdown_controlbutton disabled" title="" data-original-title="Ordered List"><span unselectable="on">OL</span></li><li class="meltdown_control-link meltdown_control meltdown_controlbutton disabled" title="" data-original-title="Link"><span unselectable="on">Link</span></li><li class="meltdown_control-code meltdown_control meltdown_controlbutton disabled" title="" data-original-title="Code"><span unselectable="on">Code</span></li><li class="meltdown_control-highlight meltdown_control meltdown_controlbutton disabled" title="" data-original-title="Highlight"><span unselectable="on">Highlight</span></li><li class="meltdown_control-table meltdown_control meltdown_controlbutton disabled" title="" data-original-title="Table"><span unselectable="on">Table</span></li></ul></div><div class="meltdown_editor-wrap"><div class="meltdown_editor-deco"><textarea name="comment[content]" id="comment_content" placeholder="Leave a comment..." class="js-comment-content tutorial-comment-field meltdown_editor" data-markdown="true" disabled="disabled" style="overflow: hidden; word-wrap: break-word; resize: none; height: 120px;"></textarea></div></div><div class="meltdown_preview-wrap"><div class="meltdown_preview-wrap2"><div class="meltdown_preview-error-message">Could not load preview. <a href="https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04#">Try again</a></div><div class="meltdown_preview-loading-message">Loading preview...</div><div class="meltdown_preview content-body"></div></div></div><div class="meltdown_bottommargin"></div></div>
+
+    <div class="response-user-details">
+      <div class="response-avatar">
+        
+      </div>
+
+      <div class="logged-in">
+        <div class="logged-in-as">Logged in as:</div>
+        
+      </div>
+    </div>
+
+    <button type="submit" class="submit-comment" data-disable-with="Submitting..." disabled="disabled">
+      Comment
+    </button>
+
+
+      <div class="subscribe-to-post">
+        <input type="checkbox" name="comment[subscribe]" id="comment_subscribe" checked="checked" disabled="disabled">
+        <label for="comment_subscribe">Notify me of replies to my comment</label>
+      </div>
+
+    <button type="submit" class="submit-comment submit-comment-mobile" data-disable-with="Submitting..." disabled="disabled">
+      Comment
+    </button>
+
+    <div class="clearfix"></div>
+</form>
+</div>
+
+
+  <div class="comments">
+    <ul class="response-list">
+          <a class="hidden" rel="nofollow" data-remote="true" href="https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04/comments">Load</a>
+    </ul>
+
+      <div class="comments-spinner"><div class="spinner spinner-large">
+  <div class="bounce1"></div>
+  <div class="bounce2"></div>
+  <div class="bounce3"></div>
+  
+</div>
+</div>
+  </div>
+
+  <div class="load-more-container"></div>
+</div>
+
+
+  </div>
+</div>
+
+<div class="creative-commons">
+  <a class="creative-commons-image" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img rel="license" alt="Creative Commons License" src="./Rails+Nginx+Unicorn_files/creativecommons-08b32a9279fcd47fcd78ac6a26331389.png"></a>
+    <div class="license-text">This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.</div>
+</div>
+
+
+
+
+
+        <div class="clearfix"></div>
+      </div>
+
+      <footer class="footer">
+  <div class="footer-icon">
+    <span class="icon icon-sammy"></span>
+  </div>
+
+  <div class="copyright">
+    Copyright © 2016 DigitalOcean™ Inc.
+  </div>
+
+  <ul class="main-nav-links">
+    <li><a href="https://www.digitalocean.com/community">Community</a></li>
+    <li><a href="https://www.digitalocean.com/community/tutorials">Tutorials</a></li>
+    <li><a href="https://www.digitalocean.com/community/questions">Questions</a></li>
+    <li><a href="https://www.digitalocean.com/community/projects">Projects</a></li>
+    <li><a href="https://www.digitalocean.com/community/tags">Tags</a></li>
+    <li>
+      <a href="https://www.digitalocean.com/community/tutorials/feed">
+        RSS <span class="icon-rss"></span>
+</a>    </li>
+  </ul>
+
+  <br>
+
+  <ul class="secondary-nav-links">
+    <li><a href="https://www.digitalocean.com/features/one-click-apps/">Distros &amp; One-Click Apps</a></li>
+    <li><a href="https://www.digitalocean.com/legal/terms/">Terms, Privacy, &amp; Copyright</a></li>
+    <li><a href="https://www.digitalocean.com/security/">Security</a></li>
+      <li><a data-toggle="modal" data-target="#sign-in-modal" href="https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04#">Report a Bug</a></li>
+    <li><a href="https://www.digitalocean.com/community/get-paid-to-write">Get Paid to Write</a></li>
+  </ul>
+</footer>
+
+
+
+
+
+    <div id="sign-in-modal" class="modal fade mini-modal" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1>Almost there!</h1>
+        <a class="close-button" data-dismiss="modal" href="https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04"><span class="icon icon-close-light"></span></a>
+      </div>
+      <div class="modal-body">
+        <div class="sign-in-message">Sign into your account, or create a new one, to start interacting.</div>
+
+        <div class="sign-in-modal-actions">
+          <a class="sign-in-link button blue-button" data-default-url="/community/auth/digitalocean" href="https://www.digitalocean.com/community/auth/digitalocean">Log In</a>
+          <a class="sign-up-link button green-button" data-default-url="/community/auth/digitalocean?display=sessionless+register" href="https://www.digitalocean.com/community/auth/digitalocean?display=sessionless+register">Sign Up</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+  <script>
+    $(function() {
+      init_sharing();
+      new NewsletterSignup();
+      new GrowableMarkdown({ target: '[data-growable-markdown]' });
+    });
+  </script>
+
+  <div id="report-a-bug-modal" class="modal fade mini-modal" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1>Report a Bug</h1>
+          <a class="close-button" data-dismiss="modal" href="https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04"><span class="icon icon-close-light"></span></a>
+        </div>
+        <div class="modal-body">
+          <div class="report-a-bug-message text-center">Use this form to report bugs related to the Community</div>
+          <div class="report-a-bug-actions do-form">
+            <div class="form-wrap">
+              <form class="new_bug_report" id="new_bug_report" action="https://www.digitalocean.com/community/bug_reports" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="✓"><input type="hidden" name="authenticity_token" value="8rzhrvLIYDH6zcsPJPqP416oqCJ02uCgBh9DW/eE52aj0GdJcrH/ASQ8tep2UVb9bZ9zgTrkXWfEs0ssRLe1KA==">
+                <fieldset>
+                  <div class="field">
+                    <input placeholder="Name" type="text" name="bug_report[name]" id="bug_report_name">
+                  </div>
+                  <div class="field">
+                    <input placeholder="Email" required="required" type="text" name="bug_report[email]" id="bug_report_email">
+                  </div>
+                  <div class="field">
+                      <textarea placeholder="Message" required="required" name="bug_report[message]" id="bug_report_message" style="overflow: hidden; word-wrap: break-word; resize: none; height: 125px;"></textarea>
+                  </div>
+
+                  <div class="field actions">
+                    <input type="submit" name="commit" value="Submit" class="button">
+                  </div>
+                </fieldset>
+</form>            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    
+  
+
+<textarea tabindex="-1" style="position: absolute; top: -999px; left: 0px; right: auto; bottom: auto; border: 0px; padding: 0px; box-sizing: content-box; word-wrap: break-word; overflow: hidden; transition: none; height: 0px !important; min-height: 0px !important; font-family: proxima-nova, sans-serif; font-size: 17px; font-weight: 400; font-style: normal; letter-spacing: 0px; text-transform: none; word-spacing: 0px; text-indent: 0px; line-height: 23.8px; width: 58px;" class="autosizejs" id="autosizejs"></textarea><a id="scrollUp" href="https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-unicorn-and-nginx-on-ubuntu-14-04#top" style="display: none; position: fixed; z-index: 2147483647;">Scroll to top</a><div id="scrollUp-active" style="position: absolute; top: 300px; width: 100%; border-top-width: 1px; border-top-style: dotted; border-top-color: rgb(0, 255, 255); z-index: 2147483647;"></div><script type="text/javascript" id="">(function(){var a=window._fbq||(window._fbq=[]);if(!a.loaded){var b=document.createElement("script");b.async=!0;b.src="//connect.facebook.net/en_US/fbds.js";var c=document.getElementsByTagName("script")[0];c.parentNode.insertBefore(b,c);a.loaded=!0}a.push(["addPixelId","1428881624071898"])})();window._fbq=window._fbq||[];window._fbq.push(["track","PixelInitialized",{}]);</script>
+<noscript>&lt;img height="1" width="1" alt="" style="display:none" src="https://www.facebook.com/tr?id=1428881624071898&amp;amp;ev=PixelInitialized"&gt;</noscript><script type="text/javascript" id="">(function(b,c,e,g,d){var f,a;b[d]=b[d]||[];f=function(){if(UET){var a={ti:"4047822"};a.q=b[d];b[d]=new UET(a);b[d].push("pageLoad")}};a=c.createElement(e);a.src=g;a.async=1;a.onload=a.onreadystatechange=function(){var b=this.readyState;b&&"loaded"!==b&&"complete"!==b||(f(),a.onload=a.onreadystatechange=null)};c=c.getElementsByTagName(e)[0];c.parentNode.insertBefore(a,c)})(window,document,"script","//bat.bing.com/bat.js","uetq");</script><noscript>&lt;img src="//bat.bing.com/action/0?ti=4047822&amp;amp;Ver=2" height="0" width="0" style="display:none; visibility: hidden;"&gt;</noscript><div id="fb-root" class=" fb_reset"><div style="position: absolute; top: -10000px; height: 0px; width: 0px;"><div></div></div><div style="position: absolute; top: -10000px; height: 0px; width: 0px;"><div><iframe name="fb_xdm_frame_https" frameborder="0" allowtransparency="true" allowfullscreen="true" scrolling="no" id="fb_xdm_frame_https" aria-hidden="true" title="Facebook Cross Domain Communication Frame" tabindex="-1" src="./Rails+Nginx+Unicorn_files/xd_arbiter.html" style="border: none;"></iframe></div></div></div><iframe id="rufous-sandbox" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" style="position: absolute; visibility: hidden; display: none; width: 0px; height: 0px; padding: 0px; border: none;" src="./Rails+Nginx+Unicorn_files/saved_resource.html"></iframe></body></html>
