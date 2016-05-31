@@ -29,7 +29,7 @@
     <arrivalphase phase="6" duration="10" unit="minute">
       <users arrivalrate="128" unit="second"/>
     </arrivalphase>
-    <arrivalphase phase="7" duration="10" unit="minute">
+    <arrivalphase phase="7" duration="20" unit="minute">
       <users arrivalrate="256" unit="second"/>
     </arrivalphase>
   </load>
